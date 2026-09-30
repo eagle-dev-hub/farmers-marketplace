@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="style.css" />
+  <title>Farmers Marketplace</title>
+</head>
+<body>
+
+  <!-- Navigation Bar -->
+  <header class="navbar">
+    <div class="container nav-container">
+      <div class="logo">
+        <span class="logo-icon">🌱</span> Farmers Marketplace
+      </div>
+    </div>
+  </header>
+
+  <!-- View Product Detail Overlay Container -->
+  <section id="product-detail"></section>
+
+  <!-- Main Content Layout -->
+  <main class="container main-layout">
+    
+    <!-- Add Product Sidebar Form -->
+    <aside class="add-product-card">
+      <h2>Add Product</h2>
+
+      <input 
+      id="search-input"
+      type="search"
+      placeholder="search...."
+      
+      />
+      <form class="form">
+        <label class="image">
+          Product Image:
+          <input id="image" type="file" accept="image/*"  />
+        </label>
+
+        <label>
+          Product Name:
+          <input id="product-name" type="text" placeholder="e.g. Onion" required />
+        </label>
+
+        <label>
+          Quantity:
+          <input id="quantity" type="text" placeholder="e.g. 500kg" required />
+        </label>
+
+        <label>
+          Location:
+          <input id="location" type="text" placeholder="e.g. Dessie" required />
+        </label>
+
+        <label>
+          Price:
+          <input id="price" type="text" placeholder="e.g. 500$" required />
+        </label>
+
+        <button class="add-btn" type="submit">Add Product</button>
+      </form>
+    </aside>
+
+    <!-- Available Products Section -->
+    <section class="product-listing">
+      <h2>Available Products</h2>
+      <div class="product-grid" id="product-grid">
+        <!-- JS renders products dynamically here -->
+      </div>
+    </section>
+
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>
