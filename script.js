@@ -11,11 +11,13 @@ const productGrid = document.querySelector("#product-grid");
 const productDetail = document.querySelector("#product-detail");
 const searchInput = document.querySelector("#search-input");
 const submitButton = document.querySelector("#submit-btn");
+const categoryFilter = document.querySelector("#category-filter");
 
 
 // --- INITIAL STATE & STORAGE ---
 const initialProducts = [
   {
+    category: "Fruit",
     name: "Banana",
     quantity: "50kg",
     location: "Dessie",
@@ -23,6 +25,7 @@ const initialProducts = [
     image: "image/Banana.webp"
   },
   {
+    category: "Vegetable",
     name: "Tomato",
     quantity: "50kg",
     location: "Dessie",
@@ -30,6 +33,7 @@ const initialProducts = [
     image: "image/Tomato.webp"
   },
   {
+    category: "Vegetable",
     name: "Potato",
     quantity: "50kg",
     location: "Dessie",
@@ -37,6 +41,16 @@ const initialProducts = [
     image: "image/potato.webp"
   }
 ];
+categoryFilter.addEventListener("change", function () {
+  const selectedCategory = categoryFilter.value;
+  const filteredProducts = products.filter(function(product){
+      console.log("Product category:", product.category);
+  console.log("Selected category:", selectedCategory);
+  console.log(products)
+   return product.category === selectedCategory;
+  });
+console.log(filteredProducts);
+});
 
 const savedProducts =
   JSON.parse(localStorage.getItem("products"));
