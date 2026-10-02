@@ -269,17 +269,25 @@ function renderProduct(productList = products) {
 
     // --- DELETE PRODUCT ---
     deleteButton.addEventListener("click", function () {
+      const answer = confirm("Are you sure you want to delete this product?");
+
+if(answer){
+
 
       products = products.filter(function (item) {
 
         return item.name !== product.name;
+          
 
       });
+        
+}
 
       localStorage.setItem(
         "products",
         JSON.stringify(products)
       );
+
 
       renderProduct();
 
