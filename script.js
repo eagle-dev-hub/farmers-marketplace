@@ -10,6 +10,7 @@ const imageInput = document.querySelector("#image");
 const productGrid = document.querySelector("#product-grid");
 const productDetail = document.querySelector("#product-detail");
 const searchInput = document.querySelector("#search-input");
+const submitButton = document.querySelector("#submit-btn");
 
 
 // --- INITIAL STATE & STORAGE ---
@@ -127,11 +128,11 @@ form.addEventListener("submit", function (event) {
 
 
 // --- RENDER FUNCTION ---
-function renderProduct() {
+function renderProduct(productList = products) {
 
   productGrid.innerHTML = "";
 
-  products.forEach(function (product) {
+  productList.forEach(function (product) {
 
     const productHTML = `
       <article>
@@ -260,12 +261,6 @@ function renderProduct() {
       );
 
     });
-     // --- SEARCH PRODUCT ---
-      searchInput.addEventListener("input", function(){
-        const searchText = searchInput.value;
-     
-
-      });
 
 
     // --- DELETE PRODUCT ---
@@ -276,8 +271,6 @@ function renderProduct() {
         return item.name !== product.name;
 
       });
-     
-
 
       localStorage.setItem(
         "products",
@@ -291,6 +284,22 @@ function renderProduct() {
   });
 
 }
+
+
+// --- SEARCH PRODUCT ---
+searchInput.addEventListener("input", function () {
+
+  const searchText = searchInput.value;
+
+  const filteredProducts = products.filter(function (product) {
+
+    return product.name.includes(searchText);
+
+  });
+
+  renderProduct(filteredProducts);
+
+});
 
 
 // --- START APP ---
