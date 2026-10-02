@@ -177,10 +177,12 @@ function renderProduct(productList = products) {
     editButton.addEventListener("click", function () {
 
       const selectedProduct = products.find(function (item) {
-
+       
         return item.name === product.name;
 
+      
       });
+      
 
       productInputName.value =
         selectedProduct.name;
@@ -195,6 +197,7 @@ function renderProduct(productList = products) {
         selectedProduct.price;
 
       editingProduct = selectedProduct;
+      submitButton.textContent = "Update Product";
 
     });
 
@@ -203,6 +206,7 @@ function renderProduct(productList = products) {
     viewButton.addEventListener("click", function () {
 
       const selectedProduct = products.find(function (item) {
+    
 
         return item.name === product.name;
 
