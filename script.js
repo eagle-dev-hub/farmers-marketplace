@@ -6,6 +6,7 @@ const quantityInput = document.querySelector("#quantity");
 const locationInput = document.querySelector("#location");
 const priceInput = document.querySelector("#price");
 const imageInput = document.querySelector("#image");
+const categoryInput = document.querySelector("#category");
 
 const productGrid = document.querySelector("#product-grid");
 const productDetail = document.querySelector("#product-detail");
@@ -41,16 +42,6 @@ const initialProducts = [
     image: "image/potato.webp"
   }
 ];
-categoryFilter.addEventListener("change", function () {
-  const selectedCategory = categoryFilter.value;
-  const filteredProducts = products.filter(function(product){
-      console.log("Product category:", product.category);
-  console.log("Selected category:", selectedCategory);
-  console.log(products)
-   return product.category === selectedCategory;
-  });
-console.log(filteredProducts);
-});
 
 const savedProducts =
   JSON.parse(localStorage.getItem("products"));
@@ -58,6 +49,26 @@ const savedProducts =
 let products = savedProducts || initialProducts;
 
 let editingProduct = null;
+
+
+// --- CATEGORY FILTER ---
+categoryFilter.addEventListener("change", function () {
+
+  const selectedCategory = categoryFilter.value;
+
+  const filteredProducts = products.filter(function (product) {
+
+    if (selectedCategory === "all") {
+      return true;
+    }
+
+    return product.category === selectedCategory;
+
+  });
+
+  renderProduct(filteredProducts);
+
+});
 
 
 // --- FORM SUBMIT HANDLER ---
@@ -74,11 +85,14 @@ form.addEventListener("submit", function (event) {
     reader.onload = function () {
 
       const product = {
+
         image: reader.result,
         name: productInputName.value,
         quantity: quantityInput.value,
         location: locationInput.value,
-        price: priceInput.value
+        price: priceInput.value,
+        category: categoryInput.value
+
       };
 
 
@@ -90,6 +104,7 @@ form.addEventListener("submit", function (event) {
         editingProduct.location = product.location;
         editingProduct.price = product.price;
         editingProduct.image = product.image;
+        editingProduct.category = product.category;
 
       } else {
 
@@ -97,12 +112,18 @@ form.addEventListener("submit", function (event) {
 
       }
 
+
+      // --- SAVE ---
       localStorage.setItem(
         "products",
         JSON.stringify(products)
       );
 
+
+      // --- RESET EDIT MODE ---
       editingProduct = null;
+
+      submitButton.textContent = "Add Product";
 
       form.reset();
 
@@ -115,20 +136,35 @@ form.addEventListener("submit", function (event) {
   } else {
 
     // --- EDIT WITHOUT NEW IMAGE ---
-
     if (editingProduct !== null) {
 
-      editingProduct.name = productInputName.value;
-      editingProduct.quantity = quantityInput.value;
-      editingProduct.location = locationInput.value;
-      editingProduct.price = priceInput.value;
+      editingProduct.name =
+        productInputName.value;
 
+      editingProduct.quantity =
+        quantityInput.value;
+
+      editingProduct.location =
+        locationInput.value;
+
+      editingProduct.price =
+        priceInput.value;
+
+      editingProduct.category =
+        categoryInput.value;
+
+
+      // --- SAVE ---
       localStorage.setItem(
         "products",
         JSON.stringify(products)
       );
 
+
+      // --- RESET EDIT MODE ---
       editingProduct = null;
+
+      submitButton.textContent = "Add Product";
 
       form.reset();
 
@@ -149,6 +185,7 @@ function renderProduct(productList = products) {
   productList.forEach(function (product) {
 
     const productHTML = `
+
       <article>
 
         <h1>Product name: ${product.name}</h1>
@@ -158,24 +195,34 @@ function renderProduct(productList = products) {
           alt="${product.name}"
         >
 
+        <p>Category: ${product.category}</p>
+
         <p>Quantity: ${product.quantity}</p>
+
         <p>Location: ${product.location}</p>
+
         <p>Price: ${product.price}</p>
 
         <button class="edit-btn">Edit</button>
+
         <button class="delete-btn">Delete</button>
+
         <button class="view-btn">View</button>
 
       </article>
+
     `;
+
 
     productGrid.insertAdjacentHTML(
       "beforeend",
       productHTML
     );
 
+
     const currentCard =
       productGrid.lastElementChild;
+
 
     const editButton =
       currentCard.querySelector(".edit-btn");
@@ -190,13 +237,13 @@ function renderProduct(productList = products) {
     // --- EDIT PRODUCT ---
     editButton.addEventListener("click", function () {
 
-      const selectedProduct = products.find(function (item) {
-       
-        return item.name === product.name;
+      const selectedProduct =
+        products.find(function (item) {
 
-      
-      });
-      
+          return item.name === product.name;
+
+        });
+
 
       productInputName.value =
         selectedProduct.name;
@@ -210,8 +257,14 @@ function renderProduct(productList = products) {
       priceInput.value =
         selectedProduct.price;
 
+      categoryInput.value =
+        selectedProduct.category;
+
+
       editingProduct = selectedProduct;
-      submitButton.textContent = "Update Product";
+
+      submitButton.textContent =
+        "Update Product";
 
     });
 
@@ -219,24 +272,35 @@ function renderProduct(productList = products) {
     // --- VIEW PRODUCT ---
     viewButton.addEventListener("click", function () {
 
-      const selectedProduct = products.find(function (item) {
-    
+      const selectedProduct =
+        products.find(function (item) {
 
-        return item.name === product.name;
+          return item.name === product.name;
 
-      });
+        });
+
 
       productDetail.innerHTML = `
+
         <div class="detail-card">
 
-          <button id="close-detail-btn">X</button>
+          <button id="close-detail-btn">
+            X
+          </button>
 
           <img
             src="${selectedProduct.image}"
             alt="${selectedProduct.name}"
           >
 
-          <h2>${selectedProduct.name}</h2>
+          <h2>
+            ${selectedProduct.name}
+          </h2>
+
+          <p>
+            <strong>Category:</strong>
+            ${selectedProduct.category}
+          </p>
 
           <p>
             <strong>Price:</strong>
@@ -254,16 +318,23 @@ function renderProduct(productList = products) {
           </p>
 
         </div>
+
       `;
+
 
       const closeButton =
         document.querySelector("#close-detail-btn");
 
-      closeButton.addEventListener("click", function () {
 
-        productDetail.innerHTML = "";
+      closeButton.addEventListener(
+        "click",
+        function () {
 
-      });
+          productDetail.innerHTML = "";
+
+        }
+      );
+
 
       productDetail.addEventListener(
         "click",
@@ -282,30 +353,38 @@ function renderProduct(productList = products) {
 
 
     // --- DELETE PRODUCT ---
-    deleteButton.addEventListener("click", function () {
-      const answer = confirm("Are you sure you want to delete this product?");
+    deleteButton.addEventListener(
+      "click",
+      function () {
 
-if(answer){
-
-
-      products = products.filter(function (item) {
-
-        return item.name !== product.name;
-          
-
-      });
-        
-}
-
-      localStorage.setItem(
-        "products",
-        JSON.stringify(products)
-      );
+        const answer =
+          confirm(
+            "Are you sure you want to delete this product?"
+          );
 
 
-      renderProduct();
+        if (answer) {
 
-    });
+          products =
+            products.filter(function (item) {
+
+              return item.name !== product.name;
+
+            });
+
+
+          localStorage.setItem(
+            "products",
+            JSON.stringify(products)
+          );
+
+
+          renderProduct();
+
+        }
+
+      }
+    );
 
   });
 
@@ -313,19 +392,28 @@ if(answer){
 
 
 // --- SEARCH PRODUCT ---
-searchInput.addEventListener("input", function () {
+searchInput.addEventListener(
+  "input",
+  function () {
 
-  const searchText = searchInput.value;
+    const searchText =
+      searchInput.value.toLowerCase();
 
-  const filteredProducts = products.filter(function (product) {
 
-    return product.name.includes(searchText);
+    const filteredProducts =
+      products.filter(function (product) {
 
-  });
+        return product.name
+          .toLowerCase()
+          .includes(searchText);
 
-  renderProduct(filteredProducts);
+      });
 
-});
+
+    renderProduct(filteredProducts);
+
+  }
+);
 
 
 // --- START APP ---
