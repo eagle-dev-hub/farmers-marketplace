@@ -165,7 +165,12 @@ function renderProduct(productList = products) {
   productGrid.innerHTML = "";
 
   if(productList.length === 0){
-  productGrid.innerHTML = "No products found";
+  const emptyMessage = document.createElement("p");
+  emptyMessage.classList.add("empty-message");
+  emptyMessage.textContent = "No products found";
+   productGrid.append(emptyMessage);
+
+
   return;
 
   }
