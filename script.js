@@ -51,24 +51,6 @@ let products = savedProducts || initialProducts;
 let editingProduct = null;
 
 
-// --- CATEGORY FILTER ---
-categoryFilter.addEventListener("change", function () {
-
-  const selectedCategory = categoryFilter.value;
-
-  const filteredProducts = products.filter(function (product) {
-
-    if (selectedCategory === "all") {
-      return true;
-    }
-
-    return product.category === selectedCategory;
-
-  });
-
-  renderProduct(filteredProducts);
-
-});
 
 
 // --- FORM SUBMIT HANDLER ---
@@ -181,6 +163,12 @@ form.addEventListener("submit", function (event) {
 function renderProduct(productList = products) {
 
   productGrid.innerHTML = "";
+
+  if(productList.length === 0){
+  productGrid.innerHTML = "No products found";
+  return;
+
+  }
 
   productList.forEach(function (product) {
 
@@ -390,30 +378,34 @@ function renderProduct(productList = products) {
 
 }
 
+function applyFilters(){
+
+  const searchText = searchInput.value.toLowerCase();
+
+  const selectedCategory = categoryFilter.value;
+  const filteredProducts = products.filter(function(product) {
+    const searchMatch =
+  product.name.toLowerCase().includes(searchText);
+  const categoryMatch =
+  selectedCategory === "all" ||
+  product.category === selectedCategory;
+  return searchMatch && categoryMatch;
+
+
+});
+renderProduct(filteredProducts);
+
+}
+
 
 // --- SEARCH PRODUCT ---
-searchInput.addEventListener(
-  "input",
-  function () {
 
-    const searchText =
-      searchInput.value.toLowerCase();
+searchInput.addEventListener("input", applyFilters);
+// CATEGORY FILTER
+categoryFilter.addEventListener("change", applyFilters);
 
 
-    const filteredProducts =
-      products.filter(function (product) {
-
-        return product.name
-          .toLowerCase()
-          .includes(searchText);
-
-      });
-
-
-    renderProduct(filteredProducts);
-
-  }
-);
+  
 
 
 // --- START APP ---
