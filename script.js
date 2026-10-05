@@ -55,6 +55,14 @@ let editingProduct = null;
 
 // --- FORM SUBMIT HANDLER ---
 form.addEventListener("submit", function (event) {
+  if(quantityInput.value.trim() === ""){
+  const quantityError =document.createElement("p");
+  quantityError.textContent = "Quantity field is required";
+  quantityError.parentElement.append(quantityError);
+  return;
+
+  }
+
 
   event.preventDefault();
 
