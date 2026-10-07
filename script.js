@@ -68,6 +68,8 @@ const closeEditModal =
 
 const cancelEdit =
   document.querySelector("#cancel-edit");
+  const toast = 
+  document.querySelector(".toast");
 
 
 // --- INITIAL STATE & STORAGE ---
@@ -422,8 +424,11 @@ form.addEventListener(
 
 
         renderProduct();
+        showToast("Product Added Successfully");
 
       };
+      
+     
 
 
     reader.readAsDataURL(
@@ -552,6 +557,7 @@ editForm.addEventListener(
       return;
 
     }
+    
 
 
     // --- VALIDATE ---
@@ -678,7 +684,7 @@ function finishEditing() {
 
 
   renderProduct();
-
+showToast("Product Updated Successfully!!")
 }
 
 
@@ -991,6 +997,7 @@ function renderProduct(
 
 
             renderProduct();
+            showToast("Product deleted successfully!")
 
           }
 
@@ -1067,6 +1074,13 @@ categoryFilter.addEventListener(
   applyFilters
 );
 
+function showToast(message){
+  toast.textContent = message;
+  setTimeout(function(){
+   toast.textContent = "";
+  }, 3000);
+
+}
 
 // =====================================================
 // START APP
