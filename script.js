@@ -1,4 +1,5 @@
 // --- DOM SELECTORS ---
+
 const form = document.querySelector(".form");
 
 const productInputName = document.querySelector("#product-name");
@@ -16,6 +17,7 @@ const categoryFilter = document.querySelector("#category-filter");
 
 
 // --- INITIAL STATE & STORAGE ---
+
 const initialProducts = [
   {
     category: "Fruit",
@@ -46,380 +48,736 @@ const initialProducts = [
 const savedProducts =
   JSON.parse(localStorage.getItem("products"));
 
-let products = savedProducts || initialProducts;
+let products =
+  savedProducts || initialProducts;
 
 let editingProduct = null;
 
 
+// --- VALIDATION ---
+
+function validateField(input, message) {
+
+  const existingError =
+    input.parentElement.querySelector(".error-message");
+
+  if (input.value.trim() === "") {
+
+    if (!existingError) {
+
+      const errorMessage =
+        document.createElement("p");
+
+      errorMessage.classList.add(
+        "error-message"
+      );
+
+      errorMessage.textContent =
+        message;
+
+      input.parentElement.append(
+        errorMessage
+      );
+    }
+
+    input.classList.add(
+      "input-error"
+    );
+
+    return false;
+  }
+
+  if (existingError) {
+    existingError.remove();
+  }
+
+  input.classList.remove(
+    "input-error"
+  );
+
+  return true;
+}
 
 
-// --- FORM SUBMIT HANDLER ---
-form.addEventListener("submit", function (event) {
-  if(quantityInput.value.trim() === ""){
-  const quantityError =document.createElement("p");
-  quantityError.textContent = "Quantity field is required";
-  quantityError.parentElement.append(quantityError);
-  return;
+// --- IMAGE VALIDATION ---
 
+function validateImage() {
+
+  const imageContainer =
+    imageInput.parentElement;
+
+  const existingError =
+    imageContainer.querySelector(
+      ".error-message"
+    );
+
+
+  // Editing existing product
+  // does not require a new image
+
+  if (
+    editingProduct !== null &&
+    imageInput.files.length === 0
+  ) {
+
+    if (existingError) {
+      existingError.remove();
+    }
+
+    return true;
   }
 
 
-  event.preventDefault();
+  // New product must have image
 
-  const imageFile = imageInput.files[0];
+  if (imageInput.files.length === 0) {
 
-  if (imageFile) {
+    if (!existingError) {
 
-    const reader = new FileReader();
+      const errorMessage =
+        document.createElement("p");
 
-    reader.onload = function () {
+      errorMessage.classList.add(
+        "error-message"
+      );
 
-      const product = {
+      errorMessage.textContent =
+        "Product image is required";
 
-        image: reader.result,
-        name: productInputName.value,
-        quantity: quantityInput.value,
-        location: locationInput.value,
-        price: priceInput.value,
-        category: categoryInput.value
+      imageContainer.append(
+        errorMessage
+      );
+    }
 
-      };
+    imageInput.classList.add(
+      "input-error"
+    );
+
+    return false;
+  }
 
 
-      // --- EDIT OR ADD ---
-      if (editingProduct !== null) {
+  // Image is valid
 
-        editingProduct.name = product.name;
-        editingProduct.quantity = product.quantity;
-        editingProduct.location = product.location;
-        editingProduct.price = product.price;
-        editingProduct.image = product.image;
-        editingProduct.category = product.category;
+  if (existingError) {
+    existingError.remove();
+  }
 
-      } else {
+  imageInput.classList.remove(
+    "input-error"
+  );
 
-        products.push(product);
+  return true;
+}
+
+
+// --- FORM SUBMIT HANDLER ---
+
+form.addEventListener(
+  "submit",
+  function (event) {
+
+    event.preventDefault();
+
+
+    // --- VALIDATE FIELDS ---
+
+    const nameValid =
+      validateField(
+        productInputName,
+        "Product name is required"
+      );
+
+    const categoryValid =
+      validateField(
+        categoryInput,
+        "Category is required"
+      );
+
+    const quantityValid =
+      validateField(
+        quantityInput,
+        "Quantity is required"
+      );
+
+    const locationValid =
+      validateField(
+        locationInput,
+        "Location is required"
+      );
+
+    const priceValid =
+      validateField(
+        priceInput,
+        "Price is required"
+      );
+
+    const imageValid =
+      validateImage();
+
+
+    // --- STOP IF INVALID ---
+
+    if (
+      !nameValid ||
+      !categoryValid ||
+      !quantityValid ||
+      !locationValid ||
+      !priceValid ||
+      !imageValid
+    ) {
+      return;
+    }
+
+
+    // --- CREATE PRODUCT ---
+
+    const product = {
+
+      name:
+        productInputName.value.trim(),
+
+      quantity:
+        quantityInput.value.trim(),
+
+      location:
+        locationInput.value.trim(),
+
+      price:
+        priceInput.value.trim(),
+
+      category:
+        categoryInput.value
+
+    };
+
+
+    // --- IMAGE HANDLING ---
+
+    const imageFile =
+      imageInput.files[0];
+
+
+    if (imageFile) {
+
+      const reader =
+        new FileReader();
+
+
+      reader.onload =
+        function () {
+
+          product.image =
+            reader.result;
+
+          saveProduct(product);
+
+        };
+
+
+      reader.readAsDataURL(
+        imageFile
+      );
+
+    } else {
+
+      // Keep existing image
+      // when editing
+
+      if (
+        editingProduct !== null
+      ) {
+
+        product.image =
+          editingProduct.image;
 
       }
 
 
-      // --- SAVE ---
-      localStorage.setItem(
-        "products",
-        JSON.stringify(products)
-      );
-
-
-      // --- RESET EDIT MODE ---
-      editingProduct = null;
-
-      submitButton.textContent = "Add Product";
-
-      form.reset();
-
-      renderProduct();
-
-    };
-
-    reader.readAsDataURL(imageFile);
-
-  } else {
-
-    // --- EDIT WITHOUT NEW IMAGE ---
-    if (editingProduct !== null) {
-
-      editingProduct.name =
-        productInputName.value;
-
-      editingProduct.quantity =
-        quantityInput.value;
-
-      editingProduct.location =
-        locationInput.value;
-
-      editingProduct.price =
-        priceInput.value;
-
-      editingProduct.category =
-        categoryInput.value;
-
-
-      // --- SAVE ---
-      localStorage.setItem(
-        "products",
-        JSON.stringify(products)
-      );
-
-
-      // --- RESET EDIT MODE ---
-      editingProduct = null;
-
-      submitButton.textContent = "Add Product";
-
-      form.reset();
-
-      renderProduct();
+      saveProduct(product);
 
     }
 
   }
-
-});
-
-
-// --- RENDER FUNCTION ---
-function renderProduct(productList = products) {
-
-  productGrid.innerHTML = "";
-
-  if(productList.length === 0){
-  const emptyMessage = document.createElement("p");
-  emptyMessage.classList.add("empty-message");
-  emptyMessage.textContent = "No products found";
-   productGrid.append(emptyMessage);
+);
 
 
-  return;
+// --- SAVE PRODUCT ---
+
+function saveProduct(product) {
+
+  // --- EDIT OR ADD ---
+
+  if (
+    editingProduct !== null
+  ) {
+
+    editingProduct.name =
+      product.name;
+
+    editingProduct.quantity =
+      product.quantity;
+
+    editingProduct.location =
+      product.location;
+
+    editingProduct.price =
+      product.price;
+
+    editingProduct.category =
+      product.category;
+
+    editingProduct.image =
+      product.image;
+
+  } else {
+
+    products.push(product);
 
   }
 
-  productList.forEach(function (product) {
 
-    const productHTML = `
+  // --- SAVE TO LOCAL STORAGE ---
 
-      <article>
-
-        <h1>Product name: ${product.name}</h1>
-
-        <img
-          src="${product.image}"
-          alt="${product.name}"
-        >
-
-        <p>Category: ${product.category}</p>
-
-        <p>Quantity: ${product.quantity}</p>
-
-        <p>Location: ${product.location}</p>
-
-        <p>Price: ${product.price}</p>
-
-        <button class="edit-btn">Edit</button>
-
-        <button class="delete-btn">Delete</button>
-
-        <button class="view-btn">View</button>
-
-      </article>
-
-    `;
+  localStorage.setItem(
+    "products",
+    JSON.stringify(products)
+  );
 
 
-    productGrid.insertAdjacentHTML(
-      "beforeend",
-      productHTML
+  // --- RESET EDIT MODE ---
+
+  editingProduct = null;
+
+  submitButton.textContent =
+    "Add Product";
+
+  form.reset();
+
+
+  // --- RENDER PRODUCTS ---
+
+  renderProduct();
+
+}
+
+
+// --- RENDER FUNCTION ---
+
+function renderProduct(
+  productList = products
+) {
+
+  productGrid.innerHTML = "";
+
+
+  // --- EMPTY STATE ---
+
+  if (
+    productList.length === 0
+  ) {
+
+    const emptyMessage =
+      document.createElement("p");
+
+    emptyMessage.classList.add(
+      "empty-message"
     );
 
+    emptyMessage.textContent =
+      "No products found";
 
-    const currentCard =
-      productGrid.lastElementChild;
+    productGrid.append(
+      emptyMessage
+    );
 
-
-    const editButton =
-      currentCard.querySelector(".edit-btn");
-
-    const deleteButton =
-      currentCard.querySelector(".delete-btn");
-
-    const viewButton =
-      currentCard.querySelector(".view-btn");
+    return;
+  }
 
 
-    // --- EDIT PRODUCT ---
-    editButton.addEventListener("click", function () {
+  // --- RENDER PRODUCTS ---
 
-      const selectedProduct =
-        products.find(function (item) {
+  productList.forEach(
+    function (product) {
 
-          return item.name === product.name;
+      const productHTML = `
 
-        });
+        <article>
 
-
-      productInputName.value =
-        selectedProduct.name;
-
-      quantityInput.value =
-        selectedProduct.quantity;
-
-      locationInput.value =
-        selectedProduct.location;
-
-      priceInput.value =
-        selectedProduct.price;
-
-      categoryInput.value =
-        selectedProduct.category;
-
-
-      editingProduct = selectedProduct;
-
-      submitButton.textContent =
-        "Update Product";
-
-    });
-
-
-    // --- VIEW PRODUCT ---
-    viewButton.addEventListener("click", function () {
-
-      const selectedProduct =
-        products.find(function (item) {
-
-          return item.name === product.name;
-
-        });
-
-
-      productDetail.innerHTML = `
-
-        <div class="detail-card">
-
-          <button id="close-detail-btn">
-            X
-          </button>
+          <h1>
+            Product name: ${product.name}
+          </h1>
 
           <img
-            src="${selectedProduct.image}"
-            alt="${selectedProduct.name}"
+            src="${product.image}"
+            alt="${product.name}"
           >
 
-          <h2>
-            ${selectedProduct.name}
-          </h2>
-
           <p>
-            <strong>Category:</strong>
-            ${selectedProduct.category}
+            Category: ${product.category}
           </p>
 
           <p>
-            <strong>Price:</strong>
-            ${selectedProduct.price}
+            Quantity: ${product.quantity}
           </p>
 
           <p>
-            <strong>Quantity:</strong>
-            ${selectedProduct.quantity}
+            Location: ${product.location}
           </p>
 
           <p>
-            <strong>Location:</strong>
-            ${selectedProduct.location}
+            Price: ${product.price}
           </p>
 
-        </div>
+          <div class="card-actions">
+
+            <button class="edit-btn">
+              Edit
+            </button>
+
+            <button class="delete-btn">
+              Delete
+            </button>
+
+            <button class="view-btn">
+              View
+            </button>
+
+          </div>
+
+        </article>
 
       `;
 
 
-      const closeButton =
-        document.querySelector("#close-detail-btn");
+      productGrid.insertAdjacentHTML(
+        "beforeend",
+        productHTML
+      );
 
 
-      closeButton.addEventListener(
+      const currentCard =
+        productGrid.lastElementChild;
+
+
+      const editButton =
+        currentCard.querySelector(
+          ".edit-btn"
+        );
+
+      const deleteButton =
+        currentCard.querySelector(
+          ".delete-btn"
+        );
+
+      const viewButton =
+        currentCard.querySelector(
+          ".view-btn"
+        );
+
+
+      // --- EDIT PRODUCT ---
+
+      editButton.addEventListener(
         "click",
         function () {
 
-          productDetail.innerHTML = "";
+          const selectedProduct =
+            products.find(
+              function (item) {
+
+                return (
+                  item.name ===
+                  product.name
+                );
+
+              }
+            );
+
+
+          productInputName.value =
+            selectedProduct.name;
+
+          quantityInput.value =
+            selectedProduct.quantity;
+
+          locationInput.value =
+            selectedProduct.location;
+
+          priceInput.value =
+            selectedProduct.price;
+
+          categoryInput.value =
+            selectedProduct.category;
+
+
+          editingProduct =
+            selectedProduct;
+
+
+          submitButton.textContent =
+            "Update Product";
+
+
+          // Remove old validation
+          // errors when editing
+
+          clearValidationErrors();
 
         }
       );
 
 
-      productDetail.addEventListener(
+      // --- VIEW PRODUCT ---
+
+      viewButton.addEventListener(
         "click",
-        function (event) {
+        function () {
 
-          if (event.target === productDetail) {
+          const selectedProduct =
+            products.find(
+              function (item) {
 
-            productDetail.innerHTML = "";
+                return (
+                  item.name ===
+                  product.name
+                );
+
+              }
+            );
+
+
+          productDetail.innerHTML = `
+
+            <div class="detail-card">
+
+              <button
+                id="close-detail-btn"
+              >
+                X
+              </button>
+
+              <img
+                src="${selectedProduct.image}"
+                alt="${selectedProduct.name}"
+              >
+
+              <h2>
+                ${selectedProduct.name}
+              </h2>
+
+              <p>
+                <strong>
+                  Category:
+                </strong>
+                ${selectedProduct.category}
+              </p>
+
+              <p>
+                <strong>
+                  Price:
+                </strong>
+                ${selectedProduct.price}
+              </p>
+
+              <p>
+                <strong>
+                  Quantity:
+                </strong>
+                ${selectedProduct.quantity}
+              </p>
+
+              <p>
+                <strong>
+                  Location:
+                </strong>
+                ${selectedProduct.location}
+              </p>
+
+            </div>
+
+          `;
+
+
+          const closeButton =
+            document.querySelector(
+              "#close-detail-btn"
+            );
+
+
+          closeButton.addEventListener(
+            "click",
+            function () {
+
+              productDetail.innerHTML =
+                "";
+
+            }
+          );
+
+
+          productDetail.addEventListener(
+            "click",
+            function (event) {
+
+              if (
+                event.target ===
+                productDetail
+              ) {
+
+                productDetail.innerHTML =
+                  "";
+
+              }
+
+            }
+          );
+
+        }
+      );
+
+
+      // --- DELETE PRODUCT ---
+
+      deleteButton.addEventListener(
+        "click",
+        function () {
+
+          const answer =
+            confirm(
+              "Are you sure you want to delete this product?"
+            );
+
+
+          if (answer) {
+
+            products =
+              products.filter(
+                function (item) {
+
+                  return (
+                    item.name !==
+                    product.name
+                  );
+
+                }
+              );
+
+
+            localStorage.setItem(
+              "products",
+              JSON.stringify(products)
+            );
+
+
+            renderProduct();
 
           }
 
         }
       );
 
-    });
+    }
+  );
+
+}
 
 
-    // --- DELETE PRODUCT ---
-    deleteButton.addEventListener(
-      "click",
-      function () {
+// --- CLEAR VALIDATION ERRORS ---
 
-        const answer =
-          confirm(
-            "Are you sure you want to delete this product?"
-          );
+function clearValidationErrors() {
 
+  const errors =
+    document.querySelectorAll(
+      ".error-message"
+    );
 
-        if (answer) {
-
-          products =
-            products.filter(function (item) {
-
-              return item.name !== product.name;
-
-            });
+  errors.forEach(
+    function (error) {
+      error.remove();
+    }
+  );
 
 
-          localStorage.setItem(
-            "products",
-            JSON.stringify(products)
-          );
+  const invalidInputs =
+    document.querySelectorAll(
+      ".input-error"
+    );
+
+  invalidInputs.forEach(
+    function (input) {
+
+      input.classList.remove(
+        "input-error"
+      );
+
+    }
+  );
+
+}
 
 
-          renderProduct();
+// --- APPLY FILTERS ---
 
-        }
+function applyFilters() {
+
+  const searchText =
+    searchInput.value
+      .toLowerCase();
+
+  const selectedCategory =
+    categoryFilter.value;
+
+
+  const filteredProducts =
+    products.filter(
+      function (product) {
+
+        const searchMatch =
+          product.name
+            .toLowerCase()
+            .includes(searchText);
+
+
+        const categoryMatch =
+          selectedCategory ===
+            "all" ||
+          product.category ===
+            selectedCategory;
+
+
+        return (
+          searchMatch &&
+          categoryMatch
+        );
 
       }
     );
 
-  });
 
-}
-
-function applyFilters(){
-
-  const searchText = searchInput.value.toLowerCase();
-
-  const selectedCategory = categoryFilter.value;
-  const filteredProducts = products.filter(function(product) {
-    const searchMatch =
-  product.name.toLowerCase().includes(searchText);
-  const categoryMatch =
-  selectedCategory === "all" ||
-  product.category === selectedCategory;
-  return searchMatch && categoryMatch;
-
-
-});
-renderProduct(filteredProducts);
+  renderProduct(
+    filteredProducts
+  );
 
 }
 
 
 // --- SEARCH PRODUCT ---
 
-searchInput.addEventListener("input", applyFilters);
-// CATEGORY FILTER
-categoryFilter.addEventListener("change", applyFilters);
+searchInput.addEventListener(
+  "input",
+  applyFilters
+);
 
 
-  
+// --- CATEGORY FILTER ---
+
+categoryFilter.addEventListener(
+  "change",
+  applyFilters
+);
 
 
 // --- START APP ---
+
 renderProduct();

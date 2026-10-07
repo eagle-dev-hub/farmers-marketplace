@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -6,89 +7,138 @@
   <link rel="stylesheet" href="style.css" />
   <title>Farmers Marketplace</title>
 </head>
+
 <body>
 
-  <!-- Navigation Bar -->
+  <!-- Navigation -->
   <header class="navbar">
     <div class="container nav-container">
       <div class="logo">
-        <span class="logo-icon">🌱</span> Farmers Marketplace
+        <span class="logo-icon">🌱</span>
+        Farmers Marketplace
       </div>
     </div>
   </header>
 
-  <!-- View Product Detail Overlay Container -->
+  <!-- Product Detail -->
   <section id="product-detail"></section>
 
-  <!-- Main Content Layout -->
   <main class="container main-layout">
-    
-    <!-- Add Product Sidebar Form -->
+
+    <!-- Sidebar -->
     <aside class="add-product-card">
+
       <h2>Add Product</h2>
 
-      <input 
-      id="search-input"
-      type="search"
-      placeholder="search ...."
-      
-      />
-      <select id="category-filter">
-  <option value="all">All Categories</option>
-  <option value="Fruit">Fruit</option>
-  <option value="Vegetable">Vegetable</option>
-  <option value="Cereal">Cereal</option>
+      <!-- Search and Filter -->
+      <div class="search-filter">
 
+        <input
+          id="search-input"
+          type="search"
+          placeholder="Search products..."
+        />
 
-</select>
-      <form class="form" >
+        <select id="category-filter">
+          <option value="all">All Categories</option>
+          <option value="Fruit">Fruit</option>
+          <option value="Vegetable">Vegetable</option>
+          <option value="Cereal">Cereal</option>
+        </select>
+
+      </div>
+
+      <!-- Product Form -->
+      <form class="form" novalidate>
+
         <label class="image">
           Product Image:
-          <input id="image" type="file" accept="image/*"  />
+          <input
+            id="image"
+            type="file"
+            accept="image/*"
+          />
         </label>
-        <label for="category">Category:</label>
 
-<select id="category">
-  <option value="">Select category</option>
-  <option value="Fruit">Fruit</option>
-  <option value="Vegetable">Vegetable</option>
-   <option value="Cereal">Cereal</option>
-</select>
+        <label for="category">
+          Category:
+        </label>
+
+        <select id="category" required>
+          <option value="">Select category</option>
+          <option value="Fruit">Fruit</option>
+          <option value="Vegetable">Vegetable</option>
+          <option value="Cereal">Cereal</option>
+        </select>
 
         <label>
           Product Name:
-          <input id="product-name" type="text" placeholder="e.g. Onion" required />
+          <input
+            id="product-name"
+            type="text"
+            placeholder="e.g. Onion"
+            required
+          />
         </label>
 
         <label>
           Quantity:
-          <input id="quantity" type="text" placeholder="e.g. 500kg" required />
+          <input
+            id="quantity"
+            type="text"
+            placeholder="e.g. 500kg"
+            required
+          />
         </label>
 
         <label>
           Location:
-          <input id="location" type="text" placeholder="e.g. Dessie" required />
+          <input
+            id="location"
+            type="text"
+            placeholder="e.g. Dessie"
+            required
+          />
         </label>
 
         <label>
           Price:
-          <input id="price" type="text" placeholder="e.g. 500$" required />
+          <input
+            id="price"
+            type="text"
+            placeholder="e.g. 500$"
+            required
+          />
         </label>
 
-        <button class="add-btn" type="submit" id="submit-btn">Add Product</button>
+        <button
+          class="add-btn"
+          type="submit"
+          id="submit-btn"
+        >
+          Add Product
+        </button>
+
       </form>
+
     </aside>
 
-    <!-- Available Products Section -->
+    <!-- Product Listing -->
     <section class="product-listing">
+
       <h2>Available Products</h2>
-      <div class="product-grid" id="product-grid">
-        <!-- JS renders products dynamically here -->
-      </div>
+
+      <div
+        class="product-grid"
+        id="product-grid"
+      ></div>
+
     </section>
 
   </main>
 
   <script src="script.js"></script>
+
 </body>
 </html>
+```
