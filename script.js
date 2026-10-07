@@ -1,24 +1,79 @@
+
 // --- DOM SELECTORS ---
 
-const form = document.querySelector(".form");
+// Add form
+const form =
+  document.querySelector("#add-product-form");
 
-const productInputName = document.querySelector("#product-name");
-const quantityInput = document.querySelector("#quantity");
-const locationInput = document.querySelector("#location");
-const priceInput = document.querySelector("#price");
-const imageInput = document.querySelector("#image");
-const categoryInput = document.querySelector("#category");
+const productInputName =
+  document.querySelector("#product-name");
 
-const productGrid = document.querySelector("#product-grid");
-const productDetail = document.querySelector("#product-detail");
-const searchInput = document.querySelector("#search-input");
-const submitButton = document.querySelector("#submit-btn");
-const categoryFilter = document.querySelector("#category-filter");
+const quantityInput =
+  document.querySelector("#quantity");
+
+const locationInput =
+  document.querySelector("#location");
+
+const priceInput =
+  document.querySelector("#price");
+
+const imageInput =
+  document.querySelector("#image");
+
+const categoryInput =
+  document.querySelector("#category");
+
+
+// Product display
+const productGrid =
+  document.querySelector("#product-grid");
+
+const productDetail =
+  document.querySelector("#product-detail");
+
+const searchInput =
+  document.querySelector("#search-input");
+
+const categoryFilter =
+  document.querySelector("#category-filter");
+
+
+// Edit modal
+const editModal =
+  document.querySelector("#edit-modal");
+
+const editForm =
+  document.querySelector("#edit-form");
+
+const editImageInput =
+  document.querySelector("#edit-image");
+
+const editCategoryInput =
+  document.querySelector("#edit-category");
+
+const editNameInput =
+  document.querySelector("#edit-product-name");
+
+const editQuantityInput =
+  document.querySelector("#edit-quantity");
+
+const editLocationInput =
+  document.querySelector("#edit-location");
+
+const editPriceInput =
+  document.querySelector("#edit-price");
+
+const closeEditModal =
+  document.querySelector("#close-edit-modal");
+
+const cancelEdit =
+  document.querySelector("#cancel-edit");
 
 
 // --- INITIAL STATE & STORAGE ---
 
 const initialProducts = [
+
   {
     category: "Fruit",
     name: "Banana",
@@ -27,6 +82,7 @@ const initialProducts = [
     price: "1500$",
     image: "image/Banana.webp"
   },
+
   {
     category: "Vegetable",
     name: "Tomato",
@@ -35,6 +91,7 @@ const initialProducts = [
     price: "500$",
     image: "image/Tomato.webp"
   },
+
   {
     category: "Vegetable",
     name: "Potato",
@@ -43,25 +100,41 @@ const initialProducts = [
     price: "250$",
     image: "image/potato.webp"
   }
+
 ];
 
+
 const savedProducts =
-  JSON.parse(localStorage.getItem("products"));
+  JSON.parse(
+    localStorage.getItem("products")
+  );
+
 
 let products =
   savedProducts || initialProducts;
+
+
+// Product currently being edited
 
 let editingProduct = null;
 
 
 // --- VALIDATION ---
 
-function validateField(input, message) {
+function validateField(
+  input,
+  message
+) {
 
   const existingError =
-    input.parentElement.querySelector(".error-message");
+    input.parentElement.querySelector(
+      ".error-message"
+    );
 
-  if (input.value.trim() === "") {
+
+  if (
+    input.value.trim() === ""
+  ) {
 
     if (!existingError) {
 
@@ -78,6 +151,92 @@ function validateField(input, message) {
       input.parentElement.append(
         errorMessage
       );
+
+    }
+
+
+    input.classList.add(
+      "input-error"
+    );
+
+
+    return false;
+  }
+
+
+  if (existingError) {
+    existingError.remove();
+  }
+
+
+  input.classList.remove(
+    "input-error"
+  );
+
+
+  return true;
+}
+
+
+// --- IMAGE VALIDATION ---
+
+function validateImage(
+  input,
+  existingProduct,
+  message
+) {
+
+  const container =
+    input.parentElement;
+
+  const existingError =
+    container.querySelector(
+      ".error-message"
+    );
+
+
+  // Editing existing product
+  // without selecting a new image
+
+  if (
+    existingProduct !== null &&
+    input.files.length === 0
+  ) {
+
+    if (existingError) {
+      existingError.remove();
+    }
+
+    input.classList.remove(
+      "input-error"
+    );
+
+    return true;
+  }
+
+
+  // No image selected
+
+  if (
+    input.files.length === 0
+  ) {
+
+    if (!existingError) {
+
+      const errorMessage =
+        document.createElement("p");
+
+      errorMessage.classList.add(
+        "error-message"
+      );
+
+      errorMessage.textContent =
+        message;
+
+      container.append(
+        errorMessage
+      );
+
     }
 
     input.classList.add(
@@ -86,6 +245,9 @@ function validateField(input, message) {
 
     return false;
   }
+
+
+  // Image exists
 
   if (existingError) {
     existingError.remove();
@@ -99,79 +261,45 @@ function validateField(input, message) {
 }
 
 
-// --- IMAGE VALIDATION ---
+// --- CLEAR VALIDATION ERRORS ---
 
-function validateImage() {
+function clearValidationErrors(
+  container
+) {
 
-  const imageContainer =
-    imageInput.parentElement;
-
-  const existingError =
-    imageContainer.querySelector(
+  const errors =
+    container.querySelectorAll(
       ".error-message"
     );
 
-
-  // Editing existing product
-  // does not require a new image
-
-  if (
-    editingProduct !== null &&
-    imageInput.files.length === 0
-  ) {
-
-    if (existingError) {
-      existingError.remove();
+  errors.forEach(
+    function (error) {
+      error.remove();
     }
-
-    return true;
-  }
-
-
-  // New product must have image
-
-  if (imageInput.files.length === 0) {
-
-    if (!existingError) {
-
-      const errorMessage =
-        document.createElement("p");
-
-      errorMessage.classList.add(
-        "error-message"
-      );
-
-      errorMessage.textContent =
-        "Product image is required";
-
-      imageContainer.append(
-        errorMessage
-      );
-    }
-
-    imageInput.classList.add(
-      "input-error"
-    );
-
-    return false;
-  }
-
-
-  // Image is valid
-
-  if (existingError) {
-    existingError.remove();
-  }
-
-  imageInput.classList.remove(
-    "input-error"
   );
 
-  return true;
+
+  const invalidInputs =
+    container.querySelectorAll(
+      ".input-error"
+    );
+
+  invalidInputs.forEach(
+    function (input) {
+
+      input.classList.remove(
+        "input-error"
+      );
+
+    }
+  );
+
 }
 
 
-// --- FORM SUBMIT HANDLER ---
+// =====================================================
+// ADD PRODUCT
+// =====================================================
 
 form.addEventListener(
   "submit",
@@ -180,7 +308,7 @@ form.addEventListener(
     event.preventDefault();
 
 
-    // --- VALIDATE FIELDS ---
+    // --- VALIDATE ---
 
     const nameValid =
       validateField(
@@ -213,10 +341,14 @@ form.addEventListener(
       );
 
     const imageValid =
-      validateImage();
+      validateImage(
+        imageInput,
+        null,
+        "Product image is required"
+      );
 
 
-    // --- STOP IF INVALID ---
+    // Stop if invalid
 
     if (
       !nameValid ||
@@ -226,7 +358,9 @@ form.addEventListener(
       !priceValid ||
       !imageValid
     ) {
+
       return;
+
     }
 
 
@@ -237,6 +371,9 @@ form.addEventListener(
       name:
         productInputName.value.trim(),
 
+      category:
+        categoryInput.value,
+
       quantity:
         quantityInput.value.trim(),
 
@@ -246,16 +383,254 @@ form.addEventListener(
       price:
         priceInput.value.trim(),
 
-      category:
-        categoryInput.value
+      image: ""
 
     };
 
 
-    // --- IMAGE HANDLING ---
+    // --- READ IMAGE ---
 
     const imageFile =
       imageInput.files[0];
+
+
+    const reader =
+      new FileReader();
+
+
+    reader.onload =
+      function () {
+
+        product.image =
+          reader.result;
+
+
+        products.push(
+          product
+        );
+
+
+        saveProducts();
+
+
+        form.reset();
+
+
+        clearValidationErrors(
+          form
+        );
+
+
+        renderProduct();
+
+      };
+
+
+    reader.readAsDataURL(
+      imageFile
+    );
+
+  }
+);
+
+
+// =====================================================
+// EDIT PRODUCT
+// =====================================================
+
+
+// Open edit modal
+
+function openEditModal(
+  product
+) {
+
+  editingProduct =
+    product;
+
+
+  // Fill edit form
+
+  editNameInput.value =
+    product.name;
+
+  editCategoryInput.value =
+    product.category;
+
+  editQuantityInput.value =
+    product.quantity;
+
+  editLocationInput.value =
+    product.location;
+
+  editPriceInput.value =
+    product.price;
+
+
+  // Clear previous errors
+
+  clearValidationErrors(
+    editForm
+  );
+
+
+  // Show modal
+
+  editModal.classList.add(
+    "show"
+  );
+
+}
+
+
+// Close edit modal
+
+function closeEditModalWindow() {
+
+  editModal.classList.remove(
+    "show"
+  );
+
+
+  clearValidationErrors(
+    editForm
+  );
+
+
+  editForm.reset();
+
+
+  editingProduct = null;
+
+}
+
+
+// Close buttons
+
+closeEditModal.addEventListener(
+  "click",
+  closeEditModalWindow
+);
+
+cancelEdit.addEventListener(
+  "click",
+  closeEditModalWindow
+);
+
+
+// Close when clicking outside modal
+
+editModal.addEventListener(
+  "click",
+  function (event) {
+
+    if (
+      event.target === editModal
+    ) {
+
+      closeEditModalWindow();
+
+    }
+
+  }
+);
+
+
+// --- SAVE EDITED PRODUCT ---
+
+editForm.addEventListener(
+  "submit",
+  function (event) {
+
+    event.preventDefault();
+
+
+    if (
+      editingProduct === null
+    ) {
+
+      return;
+
+    }
+
+
+    // --- VALIDATE ---
+
+    const nameValid =
+      validateField(
+        editNameInput,
+        "Product name is required"
+      );
+
+    const categoryValid =
+      validateField(
+        editCategoryInput,
+        "Category is required"
+      );
+
+    const quantityValid =
+      validateField(
+        editQuantityInput,
+        "Quantity is required"
+      );
+
+    const locationValid =
+      validateField(
+        editLocationInput,
+        "Location is required"
+      );
+
+    const priceValid =
+      validateField(
+        editPriceInput,
+        "Price is required"
+      );
+
+
+    const imageValid =
+      validateImage(
+        editImageInput,
+        editingProduct,
+        "Product image is required"
+      );
+
+
+    if (
+      !nameValid ||
+      !categoryValid ||
+      !quantityValid ||
+      !locationValid ||
+      !priceValid ||
+      !imageValid
+    ) {
+
+      return;
+
+    }
+
+
+    // --- UPDATE BASIC DATA ---
+
+    editingProduct.name =
+      editNameInput.value.trim();
+
+    editingProduct.category =
+      editCategoryInput.value;
+
+    editingProduct.quantity =
+      editQuantityInput.value.trim();
+
+    editingProduct.location =
+      editLocationInput.value.trim();
+
+    editingProduct.price =
+      editPriceInput.value.trim();
+
+
+    // --- IMAGE UPDATE ---
+
+    const imageFile =
+      editImageInput.files[0];
 
 
     if (imageFile) {
@@ -267,10 +642,11 @@ form.addEventListener(
       reader.onload =
         function () {
 
-          product.image =
+          editingProduct.image =
             reader.result;
 
-          saveProduct(product);
+
+          finishEditing();
 
         };
 
@@ -281,20 +657,9 @@ form.addEventListener(
 
     } else {
 
-      // Keep existing image
-      // when editing
+      // Keep old image
 
-      if (
-        editingProduct !== null
-      ) {
-
-        product.image =
-          editingProduct.image;
-
-      }
-
-
-      saveProduct(product);
+      finishEditing();
 
     }
 
@@ -302,76 +667,46 @@ form.addEventListener(
 );
 
 
-// --- SAVE PRODUCT ---
+// Finish edit
 
-function saveProduct(product) {
+function finishEditing() {
 
-  // --- EDIT OR ADD ---
-
-  if (
-    editingProduct !== null
-  ) {
-
-    editingProduct.name =
-      product.name;
-
-    editingProduct.quantity =
-      product.quantity;
-
-    editingProduct.location =
-      product.location;
-
-    editingProduct.price =
-      product.price;
-
-    editingProduct.category =
-      product.category;
-
-    editingProduct.image =
-      product.image;
-
-  } else {
-
-    products.push(product);
-
-  }
+  saveProducts();
 
 
-  // --- SAVE TO LOCAL STORAGE ---
+  closeEditModalWindow();
 
-  localStorage.setItem(
-    "products",
-    JSON.stringify(products)
-  );
-
-
-  // --- RESET EDIT MODE ---
-
-  editingProduct = null;
-
-  submitButton.textContent =
-    "Add Product";
-
-  form.reset();
-
-
-  // --- RENDER PRODUCTS ---
 
   renderProduct();
 
 }
 
 
-// --- RENDER FUNCTION ---
+// --- SAVE TO LOCAL STORAGE ---
+
+function saveProducts() {
+
+  localStorage.setItem(
+    "products",
+    JSON.stringify(products)
+  );
+
+}
+
+
+// =====================================================
+// RENDER PRODUCTS
+// =====================================================
 
 function renderProduct(
   productList = products
 ) {
 
-  productGrid.innerHTML = "";
+  productGrid.innerHTML =
+    "";
 
 
-  // --- EMPTY STATE ---
+  // Empty state
 
   if (
     productList.length === 0
@@ -392,10 +727,11 @@ function renderProduct(
     );
 
     return;
+
   }
 
 
-  // --- RENDER PRODUCTS ---
+  // Render products
 
   productList.forEach(
     function (product) {
@@ -405,7 +741,8 @@ function renderProduct(
         <article>
 
           <h1>
-            Product name: ${product.name}
+            Product name:
+            ${product.name}
           </h1>
 
           <img
@@ -414,32 +751,42 @@ function renderProduct(
           >
 
           <p>
-            Category: ${product.category}
+            Category:
+            ${product.category}
           </p>
 
           <p>
-            Quantity: ${product.quantity}
+            Quantity:
+            ${product.quantity}
           </p>
 
           <p>
-            Location: ${product.location}
+            Location:
+            ${product.location}
           </p>
 
           <p>
-            Price: ${product.price}
+            Price:
+            ${product.price}
           </p>
 
           <div class="card-actions">
 
-            <button class="edit-btn">
+            <button
+              class="edit-btn"
+            >
               Edit
             </button>
 
-            <button class="delete-btn">
+            <button
+              class="delete-btn"
+            >
               Delete
             </button>
 
-            <button class="view-btn">
+            <button
+              class="view-btn"
+            >
               View
             </button>
 
@@ -476,7 +823,7 @@ function renderProduct(
         );
 
 
-      // --- EDIT PRODUCT ---
+      // --- EDIT ---
 
       editButton.addEventListener(
         "click",
@@ -487,48 +834,22 @@ function renderProduct(
               function (item) {
 
                 return (
-                  item.name ===
-                  product.name
+                  item === product
                 );
 
               }
             );
 
 
-          productInputName.value =
-            selectedProduct.name;
-
-          quantityInput.value =
-            selectedProduct.quantity;
-
-          locationInput.value =
-            selectedProduct.location;
-
-          priceInput.value =
-            selectedProduct.price;
-
-          categoryInput.value =
-            selectedProduct.category;
-
-
-          editingProduct =
-            selectedProduct;
-
-
-          submitButton.textContent =
-            "Update Product";
-
-
-          // Remove old validation
-          // errors when editing
-
-          clearValidationErrors();
+          openEditModal(
+            selectedProduct
+          );
 
         }
       );
 
 
-      // --- VIEW PRODUCT ---
+      // --- VIEW ---
 
       viewButton.addEventListener(
         "click",
@@ -539,8 +860,7 @@ function renderProduct(
               function (item) {
 
                 return (
-                  item.name ===
-                  product.name
+                  item === product
                 );
 
               }
@@ -570,6 +890,7 @@ function renderProduct(
                 <strong>
                   Category:
                 </strong>
+
                 ${selectedProduct.category}
               </p>
 
@@ -577,6 +898,7 @@ function renderProduct(
                 <strong>
                   Price:
                 </strong>
+
                 ${selectedProduct.price}
               </p>
 
@@ -584,6 +906,7 @@ function renderProduct(
                 <strong>
                   Quantity:
                 </strong>
+
                 ${selectedProduct.quantity}
               </p>
 
@@ -591,6 +914,7 @@ function renderProduct(
                 <strong>
                   Location:
                 </strong>
+
                 ${selectedProduct.location}
               </p>
 
@@ -637,7 +961,7 @@ function renderProduct(
       );
 
 
-      // --- DELETE PRODUCT ---
+      // --- DELETE ---
 
       deleteButton.addEventListener(
         "click",
@@ -656,18 +980,14 @@ function renderProduct(
                 function (item) {
 
                   return (
-                    item.name !==
-                    product.name
+                    item !== product
                   );
 
                 }
               );
 
 
-            localStorage.setItem(
-              "products",
-              JSON.stringify(products)
-            );
+            saveProducts();
 
 
             renderProduct();
@@ -683,47 +1003,17 @@ function renderProduct(
 }
 
 
-// --- CLEAR VALIDATION ERRORS ---
-
-function clearValidationErrors() {
-
-  const errors =
-    document.querySelectorAll(
-      ".error-message"
-    );
-
-  errors.forEach(
-    function (error) {
-      error.remove();
-    }
-  );
-
-
-  const invalidInputs =
-    document.querySelectorAll(
-      ".input-error"
-    );
-
-  invalidInputs.forEach(
-    function (input) {
-
-      input.classList.remove(
-        "input-error"
-      );
-
-    }
-  );
-
-}
-
-
-// --- APPLY FILTERS ---
+// =====================================================
+// SEARCH + FILTER
+// =====================================================
 
 function applyFilters() {
 
   const searchText =
     searchInput.value
-      .toLowerCase();
+      .toLowerCase()
+      .trim();
+
 
   const selectedCategory =
     categoryFilter.value;
@@ -762,7 +1052,7 @@ function applyFilters() {
 }
 
 
-// --- SEARCH PRODUCT ---
+// Search
 
 searchInput.addEventListener(
   "input",
@@ -770,7 +1060,7 @@ searchInput.addEventListener(
 );
 
 
-// --- CATEGORY FILTER ---
+// Category filter
 
 categoryFilter.addEventListener(
   "change",
@@ -778,6 +1068,8 @@ categoryFilter.addEventListener(
 );
 
 
-// --- START APP ---
+// =====================================================
+// START APP
+// =====================================================
 
 renderProduct();

@@ -1,36 +1,64 @@
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  />
+
   <link rel="stylesheet" href="style.css" />
+
   <title>Farmers Marketplace</title>
 </head>
 
 <body>
 
-  <!-- Navigation -->
+  <!-- =========================
+       NAVBAR
+  ========================== -->
+
   <header class="navbar">
+
     <div class="container nav-container">
+
       <div class="logo">
         <span class="logo-icon">🌱</span>
         Farmers Marketplace
       </div>
+
     </div>
+
   </header>
 
-  <!-- Product Detail -->
+
+  <!-- =========================
+       PRODUCT DETAIL
+  ========================== -->
+
   <section id="product-detail"></section>
+
+
+  <!-- =========================
+       MAIN
+  ========================== -->
 
   <main class="container main-layout">
 
-    <!-- Sidebar -->
+
+    <!-- =========================
+         ADD PRODUCT
+    ========================== -->
+
     <aside class="add-product-card">
 
       <h2>Add Product</h2>
 
-      <!-- Search and Filter -->
+
+      <!-- SEARCH + FILTER -->
+
       <div class="search-filter">
 
         <input
@@ -40,76 +68,132 @@
         />
 
         <select id="category-filter">
-          <option value="all">All Categories</option>
-          <option value="Fruit">Fruit</option>
-          <option value="Vegetable">Vegetable</option>
-          <option value="Cereal">Cereal</option>
+
+          <option value="all">
+            All Categories
+          </option>
+
+          <option value="Fruit">
+            Fruit
+          </option>
+
+          <option value="Vegetable">
+            Vegetable
+          </option>
+
+          <option value="Cereal">
+            Cereal
+          </option>
+
         </select>
 
       </div>
 
-      <!-- Product Form -->
-      <form class="form" novalidate>
+
+      <!-- ADD PRODUCT FORM -->
+
+      <form
+        class="form"
+        id="add-product-form"
+        novalidate
+      >
 
         <label class="image">
+
           Product Image:
+
           <input
             id="image"
             type="file"
             accept="image/*"
           />
+
         </label>
+
 
         <label for="category">
           Category:
         </label>
 
-        <select id="category" required>
-          <option value="">Select category</option>
-          <option value="Fruit">Fruit</option>
-          <option value="Vegetable">Vegetable</option>
-          <option value="Cereal">Cereal</option>
+        <select
+          id="category"
+          required
+        >
+
+          <option value="">
+            Select category
+          </option>
+
+          <option value="Fruit">
+            Fruit
+          </option>
+
+          <option value="Vegetable">
+            Vegetable
+          </option>
+
+          <option value="Cereal">
+            Cereal
+          </option>
+
         </select>
 
+
         <label>
+
           Product Name:
+
           <input
             id="product-name"
             type="text"
             placeholder="e.g. Onion"
             required
           />
+
         </label>
 
+
         <label>
+
           Quantity:
+
           <input
             id="quantity"
             type="text"
             placeholder="e.g. 500kg"
             required
           />
+
         </label>
 
+
         <label>
+
           Location:
+
           <input
             id="location"
             type="text"
             placeholder="e.g. Dessie"
             required
           />
+
         </label>
 
+
         <label>
+
           Price:
+
           <input
             id="price"
             type="text"
             placeholder="e.g. 500$"
             required
           />
+
         </label>
+
 
         <button
           class="add-btn"
@@ -123,10 +207,16 @@
 
     </aside>
 
-    <!-- Product Listing -->
+
+    <!-- =========================
+         PRODUCT LIST
+    ========================== -->
+
     <section class="product-listing">
 
-      <h2>Available Products</h2>
+      <h2>
+        Available Products
+      </h2>
 
       <div
         class="product-grid"
@@ -137,8 +227,164 @@
 
   </main>
 
+
+  <!-- =========================
+       EDIT PRODUCT MODAL
+  ========================== -->
+
+  <section
+    id="edit-modal"
+    class="modal"
+  >
+
+    <div class="edit-modal-card">
+
+      <button
+        id="close-edit-modal"
+        class="close-modal-btn"
+        type="button"
+      >
+        X
+      </button>
+
+
+      <h2>
+        Edit Product
+      </h2>
+
+
+      <form
+        id="edit-form"
+        class="form"
+        novalidate
+      >
+
+        <label class="image">
+
+          Product Image:
+
+          <input
+            id="edit-image"
+            type="file"
+            accept="image/*"
+          />
+
+        </label>
+
+
+        <label for="edit-category">
+          Category:
+        </label>
+
+        <select
+          id="edit-category"
+          required
+        >
+
+          <option value="">
+            Select category
+          </option>
+
+          <option value="Fruit">
+            Fruit
+          </option>
+
+          <option value="Vegetable">
+            Vegetable
+          </option>
+
+          <option value="Cereal">
+            Cereal
+          </option>
+
+        </select>
+
+
+        <label>
+
+          Product Name:
+
+          <input
+            id="edit-product-name"
+            type="text"
+            placeholder="e.g. Onion"
+            required
+          />
+
+        </label>
+
+
+        <label>
+
+          Quantity:
+
+          <input
+            id="edit-quantity"
+            type="text"
+            placeholder="e.g. 500kg"
+            required
+          />
+
+        </label>
+
+
+        <label>
+
+          Location:
+
+          <input
+            id="edit-location"
+            type="text"
+            placeholder="e.g. Dessie"
+            required
+          />
+
+        </label>
+
+
+        <label>
+
+          Price:
+
+          <input
+            id="edit-price"
+            type="text"
+            placeholder="e.g. 500$"
+            required
+          />
+
+        </label>
+
+
+        <div class="edit-actions">
+
+          <button
+            type="button"
+            id="cancel-edit"
+            class="cancel-btn"
+          >
+            Cancel
+          </button>
+
+          <button
+            type="submit"
+            class="save-btn"
+          >
+            Save Changes
+          </button>
+
+        </div>
+
+      </form>
+
+    </div>
+
+  </section>
+
+
   <script src="script.js"></script>
 
 </body>
+
 </html>
-```
+
