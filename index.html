@@ -1,199 +1,138 @@
 
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
   <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0"
+    name="description"
+    content="Discover fresh agricultural products and connect directly with farmers."
   />
-
-  <link rel="stylesheet" href="style.css" />
-
   <title>Farmers Marketplace</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
 
 <body>
-
-  <!-- =========================
-       NAVBAR
-  ========================== -->
-
+  <!-- Navigation -->
   <header class="navbar">
-
     <div class="container nav-container">
-
-      <div class="logo">
+      <a class="logo" href="#" aria-label="Farmers Marketplace home">
         <span class="logo-icon">🌱</span>
-        Farmers Marketplace
-      </div>
+        <span>Farmers Marketplace</span>
+      </a>
 
+      <a class="nav-link" href="#available-products">
+        Explore Products
+      </a>
     </div>
-
   </header>
 
+  <!-- Homepage Hero -->
+  <section class="hero">
+    <div class="container hero-content">
+      <div class="hero-text">
+        <p class="hero-label">FRESH FROM OUR FARMERS</p>
 
-  <!-- =========================
-       PRODUCT DETAIL
-  ========================== -->
+        <h1>
+          Connecting Farmers<br />
+          With Better Markets
+        </h1>
 
-  <section id="product-detail"></section>
+        <p class="hero-description">
+          Discover fresh agricultural products and help farmers
+          connect their harvest with the people who need it.
+        </p>
 
-
-  <!-- =========================
-       MAIN
-  ========================== -->
-
-  <main class="container main-layout">
-
-
-    <!-- =========================
-         ADD PRODUCT
-    ========================== -->
-
-    <aside class="add-product-card">
-
-      <h2>Add Product</h2>
-
-
-      <!-- SEARCH + FILTER -->
-
-      <div class="search-filter">
-
-        <input
-          id="search-input"
-          type="search"
-          placeholder="Search products..."
-        />
-
-        <select id="category-filter">
-
-          <option value="all">
-            All Categories
-          </option>
-
-          <option value="Fruit">
-            Fruit
-          </option>
-
-          <option value="Vegetable">
-            Vegetable
-          </option>
-
-          <option value="Cereal">
-            Cereal
-          </option>
-
-        </select>
-
+        <a href="#available-products" class="hero-btn">
+          Explore Products
+          <span aria-hidden="true">→</span>
+        </a>
       </div>
 
+      <div class="hero-visual">
+        <img
+          src="image/Tomato.webp"
+          alt="Fresh tomatoes from local farmers"
+          class="hero-image"
+        />
 
-      <!-- ADD PRODUCT FORM -->
+        <div class="hero-image-caption">
+          <span class="caption-label">🌱 Fresh from our farmers</span>
+          <h2>Grow Together</h2>
+          <p>Fresh produce. Stronger connections.</p>
+        </div>
+      </div>
+    </div>
+  </section>
 
-      <form
-        class="form"
-        id="add-product-form"
-        novalidate
-      >
+  <!-- Product Details -->
+  <section
+    id="product-detail"
+    class="product-detail container"
+    aria-live="polite"
+  ></section>
 
-        <label class="image">
+  <!-- Main Marketplace -->
+  <main class="container main-layout">
 
-          Product Image:
+    <!-- Add Product Sidebar -->
+    <aside class="add-product-card">
+      <h2>Add a Product</h2>
 
+      <p class="form-description">
+        List your agricultural products for buyers to discover.
+      </p>
+
+      <form class="form" id="add-product-form" novalidate>
+
+        <label class="image" for="image">
+          Product Image
           <input
             id="image"
             type="file"
             accept="image/*"
           />
-
         </label>
 
-
-        <label for="category">
-          Category:
-        </label>
-
-        <select
-          id="category"
-          required
-        >
-
-          <option value="">
-            Select category
-          </option>
-
-          <option value="Fruit">
-            Fruit
-          </option>
-
-          <option value="Vegetable">
-            Vegetable
-          </option>
-
-          <option value="Cereal">
-            Cereal
-          </option>
-
+        <label for="category">Category</label>
+        <select id="category" required>
+          <option value="">Select category</option>
+          <option value="Fruit">Fruit</option>
+          <option value="Vegetable">Vegetable</option>
+          <option value="Cereal">Cereal</option>
         </select>
 
+        <label for="product-name">Product Name</label>
+        <input
+          id="product-name"
+          type="text"
+          placeholder="e.g. Onion"
+          required
+        />
 
-        <label>
+        <label for="quantity">Quantity</label>
+        <input
+          id="quantity"
+          type="text"
+          placeholder="e.g. 500 kg"
+          required
+        />
 
-          Product Name:
+        <label for="location">Location</label>
+        <input
+          id="location"
+          type="text"
+          placeholder="e.g. Dessie"
+          required
+        />
 
-          <input
-            id="product-name"
-            type="text"
-            placeholder="e.g. Onion"
-            required
-          />
-
-        </label>
-
-
-        <label>
-
-          Quantity:
-
-          <input
-            id="quantity"
-            type="text"
-            placeholder="e.g. 500kg"
-            required
-          />
-
-        </label>
-
-
-        <label>
-
-          Location:
-
-          <input
-            id="location"
-            type="text"
-            placeholder="e.g. Dessie"
-            required
-          />
-
-        </label>
-
-
-        <label>
-
-          Price:
-
-          <input
-            id="price"
-            type="text"
-            placeholder="e.g. 500$"
-            required
-          />
-
-        </label>
-
+        <label for="price">Price</label>
+        <input
+          id="price"
+          type="text"
+          placeholder="e.g. 500 birr"
+          required
+        />
 
         <button
           class="add-btn"
@@ -202,162 +141,121 @@
         >
           Add Product
         </button>
-
       </form>
-
     </aside>
 
+    <!-- Product Listing -->
+    <section
+      class="product-listing"
+      id="available-products"
+    >
+      <div class="listing-header">
+        <div>
+          <p class="section-eyebrow">FRESH & LOCAL</p>
+          <h2>Available Products</h2>
+          <p class="listing-description">
+            Explore agricultural products from local farmers.
+          </p>
+        </div>
+      </div>
 
-    <!-- =========================
-         PRODUCT LIST
-    ========================== -->
+      <!-- Search and Filter -->
+      <div class="search-filter">
+        <input
+          id="search-input"
+          type="search"
+          placeholder="Search products..."
+          aria-label="Search products"
+        />
 
-    <section class="product-listing">
+        <select
+          id="category-filter"
+          aria-label="Filter by category"
+        >
+          <option value="all">All Categories</option>
+          <option value="Fruit">Fruit</option>
+          <option value="Vegetable">Vegetable</option>
+          <option value="Cereal">Cereal</option>
+        </select>
+      </div>
 
-      <h2>
-        Available Products
-      </h2>
-
-      <div
-        class="product-grid"
-        id="product-grid"
-      ></div>
-
+      <!-- JavaScript renders product cards here -->
+      <div class="product-grid" id="product-grid"></div>
     </section>
-
   </main>
 
-
-  <!-- =========================
-       EDIT PRODUCT MODAL
-  ========================== -->
-
+  <!-- Edit Product Modal -->
   <section
     id="edit-modal"
     class="modal"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="edit-modal-title"
   >
-
     <div class="edit-modal-card">
-
       <button
         id="close-edit-modal"
         class="close-modal-btn"
         type="button"
+        aria-label="Close edit form"
       >
-        X
+        ×
       </button>
 
+      <p class="section-eyebrow">MANAGE LISTING</p>
+      <h2 id="edit-modal-title">Edit Product</h2>
 
-      <h2>
-        Edit Product
-      </h2>
-
-
-      <form
-        id="edit-form"
-        class="form"
-        novalidate
-      >
-
-        <label class="image">
-
-          Product Image:
-
+      <form id="edit-form" class="form" novalidate>
+        <label class="image" for="edit-image">
+          Product Image
           <input
             id="edit-image"
             type="file"
             accept="image/*"
           />
-
         </label>
 
-
-        <label for="edit-category">
-          Category:
-        </label>
-
-        <select
-          id="edit-category"
-          required
-        >
-
-          <option value="">
-            Select category
-          </option>
-
-          <option value="Fruit">
-            Fruit
-          </option>
-
-          <option value="Vegetable">
-            Vegetable
-          </option>
-
-          <option value="Cereal">
-            Cereal
-          </option>
-
+        <label for="edit-category">Category</label>
+        <select id="edit-category" required>
+          <option value="">Select category</option>
+          <option value="Fruit">Fruit</option>
+          <option value="Vegetable">Vegetable</option>
+          <option value="Cereal">Cereal</option>
         </select>
 
+        <label for="edit-product-name">Product Name</label>
+        <input
+          id="edit-product-name"
+          type="text"
+          placeholder="e.g. Onion"
+          required
+        />
 
-        <label>
+        <label for="edit-quantity">Quantity</label>
+        <input
+          id="edit-quantity"
+          type="text"
+          placeholder="e.g. 500 kg"
+          required
+        />
 
-          Product Name:
+        <label for="edit-location">Location</label>
+        <input
+          id="edit-location"
+          type="text"
+          placeholder="e.g. Dessie"
+          required
+        />
 
-          <input
-            id="edit-product-name"
-            type="text"
-            placeholder="e.g. Onion"
-            required
-          />
-
-        </label>
-
-
-        <label>
-
-          Quantity:
-
-          <input
-            id="edit-quantity"
-            type="text"
-            placeholder="e.g. 500kg"
-            required
-          />
-
-        </label>
-
-
-        <label>
-
-          Location:
-
-          <input
-            id="edit-location"
-            type="text"
-            placeholder="e.g. Dessie"
-            required
-          />
-
-        </label>
-
-
-        <label>
-
-          Price:
-
-          <input
-            id="edit-price"
-            type="text"
-            placeholder="e.g. 500$"
-            required
-          />
-
-        </label>
-
+        <label for="edit-price">Price</label>
+        <input
+          id="edit-price"
+          type="text"
+          placeholder="e.g. 500 birr"
+          required
+        />
 
         <div class="edit-actions">
-
           <button
             type="button"
             id="cancel-edit"
@@ -366,26 +264,23 @@
             Cancel
           </button>
 
-          <button
-            type="submit"
-            class="save-btn"
-          >
+          <button type="submit" class="save-btn">
             Save Changes
           </button>
-
         </div>
-
       </form>
-
     </div>
-
   </section>
-  <div class="toast"></div>
 
+  <!-- Feedback message used by JavaScript -->
+  <div
+    class="toast"
+    role="status"
+    aria-live="polite"
+  ></div>
 
+  <!-- Keep your existing JavaScript file -->
   <script src="script.js"></script>
-
 </body>
-
 </html>
 
